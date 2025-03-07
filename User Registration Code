@@ -1,0 +1,29 @@
+Imports System.Data.SqlClient
+Public Class UserRegister
+    Private Sub btnRegister_Click(sender As Object, e As EventArgs) Handles btnRegister.Click
+        If String.IsNullOrWhiteSpace(txtCustId.Text) OrElse String.IsNullOrWhiteSpace(txtPassword.Text) Then
+            ' Show a MessageBox with a warning
+            MessageBox.Show("Please fill in all required fields.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+        Else
+            Try
+                Conn.Open()
+                Dim query As String = "INSERT INTO Registration (CustId, CustGender, CustPhone, CustAddress,Password) VALUES (@CustId, @CustGender, @CustPhone, @CustAddress,@Password)"
+                Dim cmd As New SqlCommand(query, Conn)
+                cmd.Parameters.AddWithValue("@CustId", txtCustId.Text)
+                cmd.Parameters.AddWithValue("@CustName", txtCustName.Text)
+                cmd.Parameters.AddWithValue("@Password", txtPassword.Text)
+                cmd.Parameters.AddWithValue("@CustGender", cmbGender.SelectedItem.ToString())
+                cmd.Parameters.AddWithValue("@CustPhone", txtPhone.Text)
+                cmd.Parameters.AddWithValue("@CustAddress", txtAddress.Text)
+                cmd.ExecuteNonQuery()
+                MessageBox.Show("Registration successful!")
+                Dim USerLogin As New UserLogin()
+                USerLogin.Show()
+                Me.Hide()
+            Catch ex As Exception
+                MessageBox.Show("Error:" & ex.Message)
+                Conn.Close()
+            End Try
+        End If
+
+    End Sub
